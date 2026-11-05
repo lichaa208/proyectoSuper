@@ -7,52 +7,41 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.io.Serializable;
 
-// Agregar anotación
 @Entity
 public class Categoria implements Serializable {
 
-   
-// Agregar anotación
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-
-// Agregar anotación
-	@Basic
+    @Basic
     private String nombre;
-    public Categoria() { }
 
-    
+    public Categoria() { }
 
     public Categoria(String nombre) {
         this.nombre = nombre;
-      
     }
-    
-    public int setId() {return id; }
-	public String getNombre() {return nombre; }
-	public void setNombre(String nombre) {this.nombre = nombre; }
 
+    // Corregimos los métodos del ID aquí:
+    public int getId() { 
+        return id; 
+    }
 
+    public void setId(int id) { 
+        this.id = id; 
+    }
 
-	@Override
-	public String toString() {
-		return "Categoria : \n" + id + ", nombre=" + nombre;
-	}
-	
+    public String getNombre() { 
+        return nombre; 
+    }
 
+    public void setNombre(String nombre) { 
+        this.nombre = nombre; 
+    }
 
-
-	
-
-
-	
-    
-	
-	    
-    
+    @Override
+    public String toString() {
+        return "Categoria : \n" + id + ", nombre=" + nombre;
+    }
 }
-
-
-

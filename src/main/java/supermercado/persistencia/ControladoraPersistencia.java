@@ -6,29 +6,22 @@ import supermercado.logica.ArticuloCarrito;
 import java.util.List;
 
 public class ControladoraPersistencia {
-	
 
-	
-	ProductoJpaController productoJpa = new ProductoJpaController();
+    ProductoJpaController productoJpa = new ProductoJpaController();
+    CategoriaJpaController categoriaJpa = new CategoriaJpaController();
+    ArticuloCarritoJpaController itemCarrito = new ArticuloCarritoJpaController();
 
-	
-	CategoriaJpaController categoriaJpa = new CategoriaJpaController();
-	
-	
-	ArticuloCarritoJpaController itemCarrito = new ArticuloCarritoJpaController();
-	
-    //-----------------------------------------------------
-	
-	public void crearCategoria(Categoria cat) {
-		categoriaJpa.crear(cat);
-	}
-	
-	public void eliminarCategoria(int id) throws Exception {
+    // ------------------- CATEGORIA -------------------
+    public void crearCategoria(Categoria cat) {
+        categoriaJpa.crear(cat);
+    }
+
+    public void eliminarCategoria(int id) throws Exception {
         categoriaJpa.destroy(id);
     }
-	
-	public void editarCategoria(Categoria cat) throws Exception {
-		categoriaJpa.edit(cat);
+
+    public void editarCategoria(Categoria cat) throws Exception {
+        categoriaJpa.edit(cat);
     }
 
     public Categoria listarCategoria(int id) {
@@ -38,19 +31,18 @@ public class ControladoraPersistencia {
     public List<Categoria> listarCategorias() {
         return categoriaJpa.buscarTodos();
     }
-    
-    //-------------------------------------------------
-	
+
+    // ------------------- PRODUCTO -------------------
     public void crearProducto(Producto prod) {
-    	productoJpa.crear(prod);
+        productoJpa.crear(prod);
     }
 
     public void eliminarProducto(int id) throws Exception {
-    	productoJpa.destroy(id);
+        productoJpa.destroy(id);
     }
 
     public void editarProducto(Producto prod) throws Exception {
-    	productoJpa.edit(prod);
+        productoJpa.edit(prod);
     }
 
     public Producto listarProducto(int id) {
@@ -60,23 +52,30 @@ public class ControladoraPersistencia {
     public List<Producto> listarProductos() {
         return productoJpa.buscarTodos();
     }
-    
+
     public List<Producto> listarProductosPorCategoria(int catId) {
         return productoJpa.buscarPorCategoria(catId);
     }
-    
-    
-    //----------------------------------------------------------
+
+    // ------------------- ARTICULO CARRITO -------------------
     public void crearArticuloCarrito(ArticuloCarrito art) {
-    	itemCarrito.crear(art);
+        itemCarrito.crear(art);
     }
 
-    public void eliminarArticuloCarrito(int id) throws Exception {
-    	itemCarrito.destroy(id);
+    public void eliminarArticuloCarrito(int id) {
+        try {
+            itemCarrito.destroy(id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
-    public void editarArticuloCarrito(ArticuloCarrito art) throws Exception {
-    	itemCarrito.edit(art);
+    public void editarArticuloCarrito(ArticuloCarrito art) {
+        try {
+            itemCarrito.edit(art);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public ArticuloCarrito listarArticuloCarrito(int id) {
@@ -86,5 +85,8 @@ public class ControladoraPersistencia {
     public List<ArticuloCarrito> listarArticulosCarrito() {
         return itemCarrito.buscarTodos();
     }
-	
+
+    public void vaciarCarrito() {
+        itemCarrito.vaciarCarrito();
+    }
 }

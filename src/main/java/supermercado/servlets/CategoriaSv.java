@@ -10,10 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
 
-@WebServlet("/CategoriaSV")
+@WebServlet("/CategoriaSv") // <-- 1. Mapeo estandarizado en minúscula
 public class CategoriaSv extends HttpServlet {
 
     ControladoraLogica controlog = new ControladoraLogica();
@@ -22,14 +20,12 @@ public class CategoriaSv extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        response.setContentType("text/plain;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-
-        List<Categoria> listaCategorias = controlog.traerCategorias();
-
-        out.println("=== LISTADO DE CATEGORIAS ===");
-        for (Categoria c : listaCategorias) {
-            out.println(c.toString());
+        String catIdParam = request.getParameter("categoriaId");
+        
+        if (catIdParam != null && !catIdParam.trim().isEmpty()) {
+            response.sendRedirect("ProductoSv?categoriaId=" + catIdParam);
+        } else {
+            response.sendRedirect("ProductoSv");
         }
     }
 
@@ -46,6 +42,7 @@ public class CategoriaSv extends HttpServlet {
             controlog.crearCategoria(cat);
         }
 
-        response.sendRedirect("CategoriaSv");
+        // Redirige al Servlet de productos para ver el resultado en la tienda
+        response.sendRedirect("ProductoSv"); // <-- 2. Redirigir a la tienda
     }
 }

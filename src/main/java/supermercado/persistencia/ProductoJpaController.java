@@ -5,6 +5,8 @@ import supermercado.logica.Producto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -102,16 +104,19 @@ public class ProductoJpaController implements Serializable{
 	    }
 	}
 	
-	public List<Producto> buscarPorCategoria(int categoriaId) {
-        EntityManager em = getEntityManager();
-        try {
-            return em.createQuery("SELECT p FROM Producto p WHERE p.categoria.id = :Id", Producto.class)
-                    .setParameter("catId", categoriaId)
-                    .getResultList();
-        } finally {
-            em.close();
-        }
-    }
+	public List<Producto> buscarPorCategoria(int catId) {
+	    EntityManager em = getEntityManager();
+	    try {
+	        // Asegurate de que el placeholder en la query :catId coincida exactamente
+	        TypedQuery<Producto> query = em.createQuery(
+	            "SELECT p FROM Producto p WHERE p.categoria.id = :catId", Producto.class);
+	        
+	        query.setParameter("catId", catId); // <--- Aca usas "catId"
+	        return query.getResultList();
+	    } finally {
+	        em.close();
+	    }
+	}
 	
 	
 	

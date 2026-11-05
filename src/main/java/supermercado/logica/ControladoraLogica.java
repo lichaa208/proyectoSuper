@@ -5,11 +5,15 @@ import java.util.List;
 
 public class ControladoraLogica {
 
-	ControladoraPersistencia controlPersis = new ControladoraPersistencia();
+    ControladoraPersistencia controlPersis = new ControladoraPersistencia();
 
-    // ==================== CATEGORIA ===================
+    // ==================== CATEGORIA ====================
     public void crearCategoria(Categoria cat) {
         controlPersis.crearCategoria(cat);
+    }
+
+    public Categoria traerCategoria(int id) {
+        return controlPersis.listarCategoria(id);
     }
 
     public void eliminarCategoria(int id) {
@@ -28,12 +32,18 @@ public class ControladoraLogica {
         }
     }
 
-    public Categoria traerCategoria(int id) {
-        return controlPersis.listarCategoria(id);
-    }
+    public List<Categoria> traerCategoria() {
+        List<Categoria> lista = controlPersis.listarCategorias();
 
-    public List<Categoria> traerCategorias() {
-        return controlPersis.listarCategorias();
+        if (lista == null || lista.isEmpty()) {
+            crearCategoria(new Categoria("Lácteos"));
+            crearCategoria(new Categoria("Bebidas"));
+            crearCategoria(new Categoria("Almacén"));
+
+            lista = controlPersis.listarCategorias();
+        }
+
+        return lista;
     }
 
     // ==================== PRODUCTO ====================
@@ -65,7 +75,6 @@ public class ControladoraLogica {
         return controlPersis.listarProductos();
     }
 
-    // Buscador JPQL solicitado en las consignas
     public List<Producto> traerProductosPorCategoria(int catId) {
         return controlPersis.listarProductosPorCategoria(catId);
     }
@@ -98,6 +107,19 @@ public class ControladoraLogica {
     public List<ArticuloCarrito> traerArticulosCarrito() {
         return controlPersis.listarArticulosCarrito();
     }
-	
-	
+
+    // --- MÉTODOS ESPECIALES DEL CARRITO ---
+
+    public void modificarCantidadCarrito(int articuloId, int nuevaCantidad) {
+        ArticuloCarrito art = traerArticuloCarrito(articuloId);
+        if (art != null && art.getProducto() != null) {
+            art.setCantidad(nuevaCantidad);
+            art.setSubtotal(art.getProducto().getPrecio() * nuevaCantidad);
+            editarArticuloCarrito(art);
+        }
+    }
+
+    public void vaciarCarrito() {
+        controlPersis.vaciarCarrito();
+    }
 }

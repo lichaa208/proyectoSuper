@@ -38,24 +38,56 @@ public class CarritoSv extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String prodIdStr = request.getParameter("productoId");
-        String cantidadStr = request.getParameter("cantidad");
+        String accion = request.getParameter("accion");
 
-        if (prodIdStr != null && cantidadStr != null) {
-            int prodId = Integer.parseInt(prodIdStr);
-            int cantidad = Integer.parseInt(cantidadStr);
+        if (accion != null) {
+            switch (accion) {
+                case "agregar":
+                    int prodId = Integer.parseInt(request.getParameter("productoId"));
+                    int cantidad = Integer.parseInt(request.getParameter("cantidad"));
+                    
+                    Producto prod = control.traerProducto(prodId);
+                    if (prod != null) {
+                        ArticuloCarrito art = new ArticuloCarrito();
+                        art.setProducto(prod);
+                        art.setCantidad(cantidad);
+                        art.setSubtotal(prod.getPrecio() * cantidad);
+                        control.crearArticuloCarrito(art);
+                    }
+                    break;
 
-            Producto prod = control.traerProducto(prodId);
+                case "modificarCantidad":
+                    int articuloIdEdit = Integer.parseInt(request.getParameter("articuloId"));
+                    int nuevaCantidad = Integer.parseInt(request.getParameter("cantidad"));
+                    control.modificarCantidadCarrito(articuloIdEdit, nuevaCantidad);
+                    break;
 
-            if (prod != null) {
-                ArticuloCarrito art = new ArticuloCarrito();
-                art.setProducto(prod);
-                art.setCantidad(cantidad);
+                case "eliminarItem":
+                    int articuloIdElim = Integer.parseInt(request.getParameter("articuloId"));
+                    control.eliminarArticuloCarrito(articuloIdElim);
+                    break;
 
-                control.crearArticuloCarrito(art);
+                case "vaciar":
+                    control.vaciarCarrito();
+                    break;
+            }
+        } else {
+            // Manejo por defecto si solo envían productoId
+            String prodIdParam = request.getParameter("productoId");
+            if (prodIdParam != null) {
+                int prodId = Integer.parseInt(prodIdParam);
+                Producto prod = control.traerProducto(prodId);
+                if (prod != null) {
+                    ArticuloCarrito art = new ArticuloCarrito();
+                    art.setProducto(prod);
+                    art.setCantidad(1);
+                    art.setSubtotal(prod.getPrecio());
+                    control.crearArticuloCarrito(art);
+                }
             }
         }
 
-        response.sendRedirect("CarritoSv");
+        // Redirige siempre a ProductoSv para actualizar el modelo
+        response.sendRedirect("ProductoSv");
     }
 }
