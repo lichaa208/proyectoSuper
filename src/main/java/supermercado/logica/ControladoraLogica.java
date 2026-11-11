@@ -122,4 +122,8 @@ public class ControladoraLogica {
     public void vaciarCarrito() {
         controlPersis.vaciarCarrito();
     }
+    
+    public List<Producto> buscarProductos(Integer categoriaId, String buscar) {
+        return controlPersis.buscarProductos(categoriaId, buscar);
+    }
 }

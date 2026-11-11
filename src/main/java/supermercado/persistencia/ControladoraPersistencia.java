@@ -89,4 +89,8 @@ public class ControladoraPersistencia {
     public void vaciarCarrito() {
         itemCarrito.vaciarCarrito();
     }
+    
+    public List<Producto> buscarProductos(Integer categoriaId, String buscar) {
+        return productoJpa.buscarProductos(categoriaId, buscar);
+    }
 }

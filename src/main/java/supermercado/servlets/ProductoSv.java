@@ -17,29 +17,27 @@ import java.util.List;
 public class ProductoSv extends HttpServlet {
 
     ControladoraLogica control = new ControladoraLogica();
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String catIdParam = request.getParameter("categoriaId");
-        List<Producto> listaProductos;
+        String categoriaIdStr = request.getParameter("categoriaId");
+        String buscar = request.getParameter("buscar");
 
-        if (catIdParam != null && !catIdParam.trim().isEmpty()) {
+        Integer categoriaId = null;
+        if (categoriaIdStr != null && !categoriaIdStr.trim().isEmpty()) {
             try {
-                int catId = Integer.parseInt(catIdParam);
-                listaProductos = control.traerProductosPorCategoria(catId);
-                if (listaProductos == null) {
-                    listaProductos = new java.util.ArrayList<>();
-                }
+                categoriaId = Integer.parseInt(categoriaIdStr);
             } catch (NumberFormatException e) {
-                listaProductos = control.traerProductos();
+                categoriaId = null;
             }
-        } else {
-            listaProductos = control.traerProductos();
         }
 
-        List<Categoria> listaCategorias = control.traerCategoria(); 
+        // Traemos los productos según la búsqueda JPQL combinada
+        List<Producto> listaProductos = control.buscarProductos(categoriaId, buscar);
+        
+        List<Categoria> listaCategorias = control.traerCategoria();
         List<ArticuloCarrito> listaCarrito = control.traerArticulosCarrito();
 
         request.setAttribute("listaProductos", listaProductos);

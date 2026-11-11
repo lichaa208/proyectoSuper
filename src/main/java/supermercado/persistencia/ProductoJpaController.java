@@ -118,7 +118,35 @@ public class ProductoJpaController implements Serializable{
 	    }
 	}
 	
-	
+	public List<Producto> buscarProductos(Integer categoriaId, String buscar) {
+	    EntityManager em = getEntityManager();
+	    try {
+	        // Consulta base con JPQL
+	        String jpql = "SELECT p FROM Producto p WHERE 1=1";
+
+	        // Agregamos filtros dinámicos según los parámetros que lleguen
+	        if (categoriaId != null && categoriaId > 0) {
+	            jpql += " AND p.categoria.id = :catId";
+	        }
+	        if (buscar != null && !buscar.trim().isEmpty()) {
+	            jpql += " AND LOWER(p.nombre) LIKE LOWER(:buscarStr)";
+	        }
+
+	        TypedQuery<Producto> query = em.createQuery(jpql, Producto.class);
+
+	        // Seteamos los parámetros en la query
+	        if (categoriaId != null && categoriaId > 0) {
+	            query.setParameter("catId", categoriaId);
+	        }
+	        if (buscar != null && !buscar.trim().isEmpty()) {
+	            query.setParameter("buscarStr", "%" + buscar.trim() + "%");
+	        }
+
+	        return query.getResultList();
+	    } finally {
+	        em.close();
+	    }
+	}
 	
 	
 }
